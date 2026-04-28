@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "author": "CardioIA — Fase 3",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-esp32-devkit-v1",
+      "id": "esp",
+      "top": 160,
+      "left": 200,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-dht22",
+      "id": "dht1",
+      "top": 40,
+      "left": 20,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-potentiometer",
+      "id": "pot1",
+      "top": 40,
+      "left": 380,
+      "attrs": { "value": "2048" }
+    }
+  ],
+  "connections": [
+    ["esp:3V3", "dht1:VCC", "red", []],
+    ["esp:GND.1", "dht1:GND", "black", []],
+    ["esp:D4", "dht1:SDA", "green", []],
+
+    ["esp:3V3", "pot1:VCC", "red", []],
+    ["esp:GND.2", "pot1:GND", "black", []],
+    ["esp:D34", "pot1:SIG", "yellow", []]
+  ],
+  "dependencies": {}
+}
