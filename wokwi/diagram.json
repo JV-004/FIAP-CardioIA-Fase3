@@ -1,10 +1,10 @@
 {
   "version": 1,
-  "author": "CardioIA — Fase 3",
+  "author": "CardioIA - Fase 3",
   "editor": "wokwi",
   "parts": [
     {
-      "type": "wokwi-esp32-devkit-v1",
+      "type": "board-esp32-devkit-c-v4",
       "id": "esp",
       "top": 160,
       "left": 200,
@@ -15,24 +15,68 @@
       "id": "dht1",
       "top": 40,
       "left": 20,
-      "attrs": {}
+      "attrs": {
+        "temperature": "36.5",
+        "humidity": "60"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r1",
+      "top": 40,
+      "left": 140,
+      "attrs": { "value": "10000" }
     },
     {
       "type": "wokwi-potentiometer",
       "id": "pot1",
       "top": 40,
       "left": 380,
-      "attrs": { "value": "2048" }
+      "attrs": {
+        "value": "1638",
+        "label": "BPM Sensor"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led1",
+      "top": 40,
+      "left": 500,
+      "attrs": {
+        "color": "green",
+        "label": "Status WiFi"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led2",
+      "top": 80,
+      "left": 500,
+      "attrs": {
+        "color": "red",
+        "label": "Alerta"
+      }
     }
   ],
   "connections": [
+    ["esp:TX", "$serialMonitor:RX", "", []],
+    ["esp:RX", "$serialMonitor:TX", "", []],
+
     ["esp:3V3", "dht1:VCC", "red", []],
-    ["esp:GND.1", "dht1:GND", "black", []],
-    ["esp:D4", "dht1:SDA", "green", []],
+    ["esp:GND", "dht1:GND", "black", []],
+    ["esp:4", "dht1:SDA", "green", []],
+    ["dht1:VCC", "r1:1", "red", []],
+    ["r1:2", "dht1:SDA", "orange", []],
 
     ["esp:3V3", "pot1:VCC", "red", []],
-    ["esp:GND.2", "pot1:GND", "black", []],
-    ["esp:D34", "pot1:SIG", "yellow", []]
+    ["esp:GND", "pot1:GND", "black", []],
+    ["esp:32", "pot1:SIG", "yellow", []],
+
+    ["esp:2", "led1:A", "green", []],
+    ["esp:GND", "led1:C", "black", []],
+
+    ["esp:15", "led2:A", "red", []],
+    ["esp:GND", "led2:C", "black", []]
   ],
   "dependencies": {}
 }

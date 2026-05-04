@@ -2,3 +2,7 @@
 version = 1
 elf = ".pio/build/esp32dev/firmware.elf"
 firmware = ".pio/build/esp32dev/firmware.bin"
+
+# Configurações específicas do Wokwi para o projeto CardioIA
+[build]
+targets = ["esp32dev"]

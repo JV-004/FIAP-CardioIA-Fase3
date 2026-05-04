@@ -1,134 +1,92 @@
 /**
  * CardioIA - Fase 3: Sistema Vestivel de Monitoramento Cardiaco
  * Edge Computing com ESP32 + Resiliencia Offline
- *
- * Descricao: Sistema que monitora sinais vitais (BPM, temperatura, umidade)
- * com capacidade de armazenamento local quando offline e sincronizacao
- * automatica quando a conectividade retorna.
- *
- * Hardware:
- *   - ESP32 DevKit v1
- *   - DHT22 (GPIO4)   - Temperatura e umidade (com resistor pull-up 10k entre VCC e SDA)
- *   - Potenciometro (GPIO34) - Simula sensor de BPM
- *   - LED Verde (GPIO2)  - Indica status WiFi
- *   - LED Vermelho (GPIO15) - Indica alertas medicos
- *
- * Autor: Equipe CardioIA
+ * Versao PlatformIO (identica ao sketch.ino com #include <Arduino.h>)
  */
 
+#include <Arduino.h>
 #include <DHT.h>
 
 // ─── Pinos ────────────────────────────────────────────────────────────────────
 
-#define PINO_DHT22        4    // Pino de dados do sensor DHT22
+#define PINO_DHT22        4
 #define TIPO_DHT          DHT22
-#define PINO_BPM          32   // Pino analogico do potenciometro (simula BPM)
-#define PINO_LED_WIFI     2    // LED verde  - status da conexao WiFi
-#define PINO_LED_ALERTA   15   // LED vermelho - alertas medicos
+#define PINO_BPM          32
+#define PINO_LED_WIFI     2
+#define PINO_LED_ALERTA   15
 
 // ─── Parametros do sistema ────────────────────────────────────────────────────
 
-#define INTERVALO_LEITURA     5000   // Intervalo entre leituras: 5 segundos (ms)
-#define INTERVALO_WIFI        30000  // Intervalo para alternar WiFi: 30 segundos (ms)
-#define MAX_REGISTROS_OFFLINE 20     // Capacidade maxima da fila offline
+#define INTERVALO_LEITURA     5000
+#define INTERVALO_WIFI        30000
+#define MAX_REGISTROS_OFFLINE 20
 
 // ─── Limites de alerta medico ─────────────────────────────────────────────────
 
-#define BPM_LIMITE_ALTO      120    // Taquicardia: > 120 BPM
-#define TEMP_LIMITE_ALTO     38.0   // Febre: > 38 graus C
-#define UMIDADE_LIMITE_BAIXO 40.0   // Ambiente seco: < 40%
-#define UMIDADE_LIMITE_ALTO  80.0   // Ambiente umido: > 80%
+#define BPM_LIMITE_ALTO      120
+#define TEMP_LIMITE_ALTO     38.0
+#define UMIDADE_LIMITE_BAIXO 40.0
+#define UMIDADE_LIMITE_ALTO  80.0
 
 // ─── Estrutura de dados ───────────────────────────────────────────────────────
 
-/**
- * LeituraVital
- * Representa uma leitura completa dos sensores com timestamp e status de alerta.
- */
 struct LeituraVital {
-  unsigned long timestamp; // Tempo em ms desde o boot do ESP32
-  int   bpm;               // Batimentos por minuto (40-180 BPM)
-  float temperatura;       // Temperatura corporal em graus Celsius
-  float umidade;           // Umidade relativa do ar em porcentagem
-  bool  alertaAtivo;       // true se algum parametro esta em estado de alerta
+  unsigned long timestamp;
+  int   bpm;
+  float temperatura;
+  float umidade;
+  bool  alertaAtivo;
 };
 
 // ─── Variaveis globais ────────────────────────────────────────────────────────
 
 DHT sensorDHT(PINO_DHT22, TIPO_DHT);
 
-LeituraVital filaOffline[MAX_REGISTROS_OFFLINE]; // Fila de armazenamento offline
-int totalRegistrosArmazenados = 0;               // Quantidade atual na fila
+LeituraVital filaOffline[MAX_REGISTROS_OFFLINE];
+int totalRegistrosArmazenados = 0;
 
-bool          wifiConectado    = false; // Estado simulado da conexao WiFi
-unsigned long ultimoToggleWifi = 0;    // Ultimo momento de alternancia do WiFi
-unsigned long ultimaLeitura    = 0;    // Ultimo momento de leitura dos sensores
+bool          wifiConectado    = false;
+unsigned long ultimoToggleWifi = 0;
+unsigned long ultimaLeitura    = 0;
 
-unsigned long totalLeituras       = 0; // Contador de leituras realizadas
-unsigned long totalAlertasGerados = 0; // Contador de alertas gerados
+unsigned long totalLeituras       = 0;
+unsigned long totalAlertasGerados = 0;
 
-// ─── Prototipo necessario (verificarAlertas usa LeituraVital) ─────────────────
+// ─── Prototipo ────────────────────────────────────────────────────────────────
 
 bool verificarAlertas(LeituraVital leitura);
 
-// ─── Funcoes de leitura dos sensores ─────────────────────────────────────────
+// ─── Funcoes ─────────────────────────────────────────────────────────────────
 
-/**
- * lerBPM()
- * Simula leitura de sensor de BPM com valores aleatorios realistas (60-115 BPM).
- * O potenciometro no simulador Wokwi com board-esp32-devkit-c-v4 sempre retorna
- * o valor maximo do ADC, por isso usamos geracao aleatoria para simular variacao
- * natural dos batimentos cardiacos em repouso.
- * Em hardware real, substituir por: return map(analogRead(PINO_BPM), 0, 4095, 40, 180);
- */
 int lerBPM() {
-  randomSeed(millis() ^ analogRead(PINO_BPM)); // Semente mista para maior variacao
-  return random(60, 116); // Faixa normal de repouso: 60-115 BPM
+  randomSeed(millis() ^ analogRead(PINO_BPM));
+  return random(60, 116);
 }
 
-/**
- * lerTemperaturaUmidade()
- * Le o sensor DHT22 e preenche os ponteiros com temperatura (Celsius) e umidade (%).
- * Retorna true se a leitura foi valida, false se o sensor retornou NaN.
- */
 bool lerTemperaturaUmidade(float* temperatura, float* umidade) {
-  *temperatura = sensorDHT.readTemperature(); // Temperatura em Celsius
-  *umidade     = sensorDHT.readHumidity();    // Umidade relativa em %
+  *temperatura = sensorDHT.readTemperature();
+  *umidade     = sensorDHT.readHumidity();
 
   if (isnan(*temperatura) || isnan(*umidade)) {
     Serial.println("[ERRO] Falha na leitura do DHT22");
-    *temperatura = -999.0; // Valor sentinela para erro
+    *temperatura = -999.0;
     *umidade     = -999.0;
     return false;
   }
   return true;
 }
 
-/**
- * coletarDadosVitais()
- * Le todos os sensores, monta e retorna uma LeituraVital completa.
- */
 LeituraVital coletarDadosVitais() {
   LeituraVital leitura;
-
-  leitura.timestamp = millis(); // Registra o momento da leitura
+  leitura.timestamp = millis();
   leitura.bpm       = lerBPM();
   lerTemperaturaUmidade(&leitura.temperatura, &leitura.umidade);
   leitura.alertaAtivo = verificarAlertas(leitura);
-
   totalLeituras++;
   if (leitura.alertaAtivo) totalAlertasGerados++;
-
   return leitura;
 }
 
-// ─── Sistema de alertas medicos ───────────────────────────────────────────────
-
-/**
- * verificarAlertas()
- * Analisa os parametros vitais e retorna true se algum limite foi ultrapassado.
- * Condicoes verificadas: taquicardia, febre, umidade inadequada.
- */
 bool verificarAlertas(LeituraVital leitura) {
   bool alerta = false;
 
@@ -139,15 +97,14 @@ bool verificarAlertas(LeituraVital leitura) {
     alerta = true;
   }
 
-  if (leitura.temperatura > TEMP_LIMITE_ALTO && leitura.temperatura != -999.0) {
+  if (leitura.temperatura > TEMP_LIMITE_ALTO) {
     Serial.print("[ALERTA] Febre: ");
     Serial.print(leitura.temperatura, 1);
     Serial.println(" C");
     alerta = true;
   }
 
-  if (leitura.umidade != -999.0 &&
-      (leitura.umidade < UMIDADE_LIMITE_BAIXO || leitura.umidade > UMIDADE_LIMITE_ALTO)) {
+  if (leitura.umidade < UMIDADE_LIMITE_BAIXO || leitura.umidade > UMIDADE_LIMITE_ALTO) {
     Serial.print("[ALERTA] Umidade inadequada: ");
     Serial.print(leitura.umidade, 1);
     Serial.println("%");
@@ -157,29 +114,16 @@ bool verificarAlertas(LeituraVital leitura) {
   return alerta;
 }
 
-/**
- * atualizarLEDs()
- * LED verde aceso = WiFi conectado.
- * LED vermelho aceso = alerta medico ativo.
- */
 void atualizarLEDs(bool alertaAtivo) {
   digitalWrite(PINO_LED_WIFI,   wifiConectado ? HIGH : LOW);
   digitalWrite(PINO_LED_ALERTA, alertaAtivo   ? HIGH : LOW);
 }
 
-// ─── Armazenamento offline (Edge Computing) ───────────────────────────────────
-
-/**
- * armazenarOffline()
- * Insere uma leitura na fila local.
- * Quando a fila esta cheia (20 registros), descarta o mais antigo (FIFO).
- */
 void armazenarOffline(LeituraVital leitura) {
   if (totalRegistrosArmazenados < MAX_REGISTROS_OFFLINE) {
     filaOffline[totalRegistrosArmazenados] = leitura;
     totalRegistrosArmazenados++;
   } else {
-    // Desloca todos os elementos para liberar espaco no final (politica FIFO)
     for (int i = 0; i < MAX_REGISTROS_OFFLINE - 1; i++) {
       filaOffline[i] = filaOffline[i + 1];
     }
@@ -188,31 +132,21 @@ void armazenarOffline(LeituraVital leitura) {
   }
 }
 
-/**
- * imprimirLeitura()
- * Imprime uma leitura no formato:
- * [TIMESTAMPms] BPM: X | Temp: X.XC | Umidade: X.X% | Status: OFFLINE/ONLINE
- */
 void imprimirLeitura(LeituraVital leitura, String status) {
   Serial.print("[");
   Serial.print(leitura.timestamp);
   Serial.print("ms] BPM: ");
   Serial.print(leitura.bpm);
   Serial.print(" | Temp: ");
-  Serial.print(leitura.temperatura, 1); // 1 casa decimal
+  Serial.print(leitura.temperatura, 1);
   Serial.print("C | Umidade: ");
-  Serial.print(leitura.umidade, 1);     // 1 casa decimal
+  Serial.print(leitura.umidade, 1);
   Serial.print("% | Status: ");
   Serial.print(status);
   if (leitura.alertaAtivo) Serial.print(" | ALERTA");
   Serial.println();
 }
 
-/**
- * sincronizarDadosOffline()
- * Envia todos os registros da fila via Serial (simula envio para nuvem via MQTT)
- * e limpa a fila apos a sincronizacao.
- */
 void sincronizarDadosOffline() {
   if (totalRegistrosArmazenados == 0) {
     Serial.println("[SYNC] Nenhum dado offline para sincronizar");
@@ -229,20 +163,13 @@ void sincronizarDadosOffline() {
     imprimirLeitura(filaOffline[i], "SYNC->CLOUD");
   }
 
-  totalRegistrosArmazenados = 0; // Limpa a fila apos sincronizacao
+  totalRegistrosArmazenados = 0;
 
   Serial.println("========================================");
   Serial.println("[SYNC] Concluido. Fila limpa.");
   Serial.println("========================================");
 }
 
-// ─── Simulacao de conectividade WiFi ─────────────────────────────────────────
-
-/**
- * simularConectividadeWiFi()
- * Alterna o estado do WiFi a cada 30 segundos.
- * Ao reconectar, dispara a sincronizacao automatica dos dados offline.
- */
 void simularConectividadeWiFi() {
   if (millis() - ultimoToggleWifi >= INTERVALO_WIFI) {
     ultimoToggleWifi = millis();
@@ -259,27 +186,15 @@ void simularConectividadeWiFi() {
   }
 }
 
-// ─── Setup ────────────────────────────────────────────────────────────────────
-
-/**
- * setup()
- * Inicializa Serial, pinos, sensor DHT22 e exibe informacoes do sistema.
- * CORRECAO: delays reduzidos para 500ms — valores maiores causavam perda
- * das primeiras mensagens no Monitor Serial do Wokwi.
- */
 void setup() {
   Serial.begin(115200);
-  delay(500); // CORRIGIDO: era 3000ms — reduzido para nao travar o Monitor Serial
+  delay(3000);
 
   pinMode(PINO_LED_WIFI,   OUTPUT);
   pinMode(PINO_LED_ALERTA, OUTPUT);
 
-  // Garante LEDs apagados na inicializacao
-  digitalWrite(PINO_LED_WIFI,   LOW);
-  digitalWrite(PINO_LED_ALERTA, LOW);
-
   sensorDHT.begin();
-  delay(2000); // DHT22 precisa de tempo para estabilizar no Wokwi
+  delay(2000);
 
   Serial.println("========================================");
   Serial.println("  CardioIA - Monitoramento Cardiaco");
@@ -288,14 +203,14 @@ void setup() {
   Serial.println("Hardware:");
   Serial.println("  - ESP32 DevKit v1");
   Serial.println("  - DHT22 (Temp + Umidade) - GPIO4");
-  Serial.println("  - Potenciometro BPM      - GPIO32");
+  Serial.println("  - Potenciometro BPM      - GPIO34");
   Serial.println("  - LED WiFi (verde)        - GPIO2");
   Serial.println("  - LED Alerta (vermelho)   - GPIO15");
   Serial.println("Configuracoes:");
   Serial.print("  - Leitura a cada: ");
   Serial.print(INTERVALO_LEITURA / 1000);
   Serial.println("s");
-  Serial.print("  - Fila offline max: ");
+  Serial.print("  - Fila offline: ");
   Serial.print(MAX_REGISTROS_OFFLINE);
   Serial.println(" registros");
   Serial.print("  - Alternancia WiFi: ");
@@ -314,7 +229,6 @@ void setup() {
   Serial.println("%");
   Serial.println("========================================");
 
-  // Teste inicial dos sensores
   Serial.println("[TESTE] Verificando sensores...");
 
   int bpmTeste = lerBPM();
@@ -334,26 +248,16 @@ void setup() {
 
   Serial.println("[OK] Sistema pronto. WiFi inicia DESCONECTADO.");
   Serial.println("========================================\n");
-  Serial.flush(); // ADICIONADO: garante que todo o buffer foi enviado ao Monitor Serial
 
-  // Inicializa os timers apos o setup completo
   ultimoToggleWifi = millis();
   ultimaLeitura    = millis();
   wifiConectado    = false;
   atualizarLEDs(false);
 }
 
-// ─── Loop principal ───────────────────────────────────────────────────────────
-
-/**
- * loop()
- * Gerencia a coleta de dados, conectividade simulada e armazenamento.
- */
 void loop() {
-  // 1. Verifica alternancia de WiFi (a cada 30s)
   simularConectividadeWiFi();
 
-  // 2. Verifica se e hora de nova leitura (a cada 5s)
   if (millis() - ultimaLeitura >= INTERVALO_LEITURA) {
     ultimaLeitura = millis();
 
@@ -361,11 +265,9 @@ void loop() {
     atualizarLEDs(leitura.alertaAtivo);
 
     if (wifiConectado) {
-      // Online: imprime diretamente (simula envio via MQTT)
       imprimirLeitura(leitura, "ONLINE");
       Serial.println("    -> Enviado para nuvem via MQTT");
     } else {
-      // Offline: armazena na fila local (Edge Computing)
       armazenarOffline(leitura);
       imprimirLeitura(leitura, "OFFLINE");
       Serial.print("    -> Fila local: [");
@@ -375,7 +277,6 @@ void loop() {
       Serial.println("]");
     }
 
-    // Exibe estatisticas a cada 10 leituras
     if (totalLeituras % 10 == 0) {
       Serial.print("\n[STATS] Leituras: ");
       Serial.print(totalLeituras);
@@ -385,5 +286,5 @@ void loop() {
     }
   }
 
-  delay(100); // Evita sobrecarga do processador
+  delay(100);
 }
