@@ -17,6 +17,9 @@
  */
 
 #include <DHT.h>
+#include <WiFi.h>
+#include <WiFiClientSecure.h>
+#include <PubSubClient.h>
 
 // ─── Pinos ────────────────────────────────────────────────────────────────────
 
@@ -67,9 +70,111 @@ unsigned long ultimaLeitura    = 0;    // Ultimo momento de leitura dos sensores
 unsigned long totalLeituras       = 0; // Contador de leituras realizadas
 unsigned long totalAlertasGerados = 0; // Contador de alertas gerados
 
+// ─── Configuracao WiFi e MQTT ─────────────────────────────────────────────────
+
+const char* ssid = "Wokwi-GUEST";
+const char* senhaWifi = "";
+
+const char* mqttServer = "de51ea6bec7c4a3a99b79d3346186628.s1.eu.hivemq.cloud";
+const int mqttPort = 8883;
+
+const char* mqttUser = "cardio";
+const char* mqttPassword = "Cardio123";
+
+const char* topicoDados = "cardio/dados";
+const char* topicoAlerta = "cardio/alerta";
+
+WiFiClientSecure wifiClient;
+PubSubClient mqttClient(wifiClient);
+
 // ─── Prototipo necessario (verificarAlertas usa LeituraVital) ─────────────────
 
 bool verificarAlertas(LeituraVital leitura);
+void conectarWiFiReal();
+void conectarMQTT();
+void publicarMQTT(LeituraVital leitura, String origem);
+
+// ─── Conexao WiFi real e MQTT ─────────────────────────────────────────────────
+
+void conectarWiFiReal() {
+  if (WiFi.status() == WL_CONNECTED) return;
+
+  Serial.print("[WIFI REAL] Conectando ao Wokwi-GUEST");
+
+  WiFi.begin(ssid, senhaWifi);
+
+  int tentativas = 0;
+  while (WiFi.status() != WL_CONNECTED && tentativas < 20) {
+    delay(500);
+    Serial.print(".");
+    tentativas++;
+  }
+
+  if (WiFi.status() == WL_CONNECTED) {
+    Serial.println("\n[WIFI REAL] Conectado!");
+  } else {
+    Serial.println("\n[WIFI REAL] Falha na conexao.");
+  }
+}
+
+void conectarMQTT() {
+  if (mqttClient.connected()) return;
+
+  wifiClient.setInsecure();
+  mqttClient.setServer(mqttServer, mqttPort);
+
+  Serial.print("[MQTT] Conectando ao HiveMQ");
+
+  int tentativas = 0;
+  while (!mqttClient.connected() && tentativas < 5) {
+    String clientId = "CardioIA-ESP32-" + String(random(0xffff), HEX);
+
+    if (mqttClient.connect(clientId.c_str(), mqttUser, mqttPassword)) {
+      Serial.println("\n[MQTT] Conectado!");
+    } else {
+      Serial.print(".");
+      Serial.print(" erro=");
+      Serial.print(mqttClient.state());
+      delay(2000);
+      tentativas++;
+    }
+  }
+}
+
+void publicarMQTT(LeituraVital leitura, String origem) {
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.println("[MQTT] WiFi real indisponivel.");
+    return;
+  }
+
+  if (!mqttClient.connected()) {
+    conectarMQTT();
+  }
+
+  if (!mqttClient.connected()) {
+    Serial.println("[MQTT] Broker indisponivel.");
+    return;
+  }
+
+  String json = "{";
+  json += "\"timestamp\":" + String(leitura.timestamp) + ",";
+  json += "\"bpm\":" + String(leitura.bpm) + ",";
+  json += "\"temperatura\":" + String(leitura.temperatura, 1) + ",";
+  json += "\"umidade\":" + String(leitura.umidade, 1) + ",";
+  json += "\"alerta\":" + String(leitura.alertaAtivo ? "true" : "false") + ",";
+  json += "\"origem\":\"" + origem + "\"";
+  json += "}";
+
+  mqttClient.publish(topicoDados, json.c_str());
+
+  Serial.print("[MQTT] Publicado em cardio/dados: ");
+  Serial.println(json);
+
+  if (leitura.alertaAtivo) {
+    mqttClient.publish(topicoAlerta, json.c_str());
+    Serial.println("[MQTT] Alerta publicado em cardio/alerta");
+  }
+}
 
 // ─── Funcoes de leitura dos sensores ─────────────────────────────────────────
 
@@ -227,6 +332,9 @@ void sincronizarDadosOffline() {
 
   for (int i = 0; i < totalRegistrosArmazenados; i++) {
     imprimirLeitura(filaOffline[i], "SYNC->CLOUD");
+
+    publicarMQTT(filaOffline[i], "fila_offline");  // Envia o dado salvo para a nuvem via MQTT
+    delay(300);                                    // Pequeno intervalo para evitar envio muito rápido
   }
 
   totalRegistrosArmazenados = 0; // Limpa a fila apos sincronizacao
@@ -251,6 +359,8 @@ void simularConectividadeWiFi() {
     if (wifiConectado) {
       Serial.println("\n[WIFI] CONECTADO - Modo online ativado");
       Serial.println("   Iniciando sincronizacao automatica...");
+      conectarWiFiReal();
+      conectarMQTT();
       sincronizarDadosOffline();
     } else {
       Serial.println("\n[WIFI] DESCONECTADO - Modo offline ativado");
@@ -353,6 +463,10 @@ void loop() {
   // 1. Verifica alternancia de WiFi (a cada 30s)
   simularConectividadeWiFi();
 
+  if (mqttClient.connected()) {
+    mqttClient.loop();
+  }
+
   // 2. Verifica se e hora de nova leitura (a cada 5s)
   if (millis() - ultimaLeitura >= INTERVALO_LEITURA) {
     ultimaLeitura = millis();
@@ -363,6 +477,7 @@ void loop() {
     if (wifiConectado) {
       // Online: imprime diretamente (simula envio via MQTT)
       imprimirLeitura(leitura, "ONLINE");
+      publicarMQTT(leitura, "tempo_real");
       Serial.println("    -> Enviado para nuvem via MQTT");
     } else {
       // Offline: armazena na fila local (Edge Computing)
