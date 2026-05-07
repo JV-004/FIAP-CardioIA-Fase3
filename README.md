@@ -2,7 +2,7 @@
 
 Projeto FIAP - Monitoramento Continuo IoT na Saude.
 
-**Link do projeto Wokwi:** https://wokwi.com/projects/463122071016855553
+**Link do projeto Wokwi:** https://wokwi.com/projects/463299672900584449
 
 ---
 
