@@ -116,21 +116,25 @@ wokwi/
 
 ---
 
-### Integração com MQTT e Sincronização de Dados
+Integração com MQTT e Sincronização de Dados
 
-Nesta etapa do projeto, foi implementada a comunicação entre o dispositivo ESP32 e a nuvem utilizando o protocolo MQTT, além de uma estratégia de funcionamento resiliente baseada em Edge Computing.
+Nesta etapa do projeto, foi implementada a comunicação entre o dispositivo ESP32 e a nuvem utilizando o protocolo MQTT, juntamente com uma estratégia de operação resiliente baseada em conceitos de Edge Computing.
 
-  - Comunicação com a Nuvem (MQTT)
+Comunicação com a Nuvem (MQTT)
 
-A transmissão dos dados foi realizada através do protocolo MQTT, escolhido por sua leveza e eficiência em aplicações IoT.
+A transmissão dos dados foi realizada por meio do protocolo MQTT, escolhido por sua leveza, eficiência e adequação a aplicações de Internet das Coisas (IoT).
 
-O ESP32 atua como um publisher, enviando os dados coletados para o broker MQTT hospedado no HiveMQ Cloud.
+O ESP32 atua como um publisher, responsável por enviar os dados coletados para um broker MQTT hospedado na nuvem.
+
+Configuração utilizada:
 
 Broker: HiveMQ Cloud
-Protocolo: MQTT
-Tópico utilizado: cardio/dados
+Protocolo: MQTT v3.1.1
+Porta: 8883
+Tópico: cardio/dados
+Autenticação: usuário e senha configurados
 
-Os dados são enviados no formato JSON, contendo informações como:
+Os dados são enviados no formato JSON, contendo informações relevantes para o monitoramento:
 
 {
   "timestamp": 43054,
@@ -141,48 +145,46 @@ Os dados são enviados no formato JSON, contendo informações como:
   "origem": "tempo_real"
 }
 
-Essa estrutura permite fácil interpretação, escalabilidade e integração com outros sistemas.
+Essa estrutura facilita a interpretação, integração com outros sistemas e escalabilidade da solução.
 
-  - Estratégia de Edge Computing
+Estratégia de Edge Computing
 
-Para garantir a continuidade do sistema mesmo em situações de falha de conectividade, foi implementada uma abordagem baseada em Edge Computing.
+Para garantir o funcionamento contínuo do sistema mesmo em situações de instabilidade de conexão, foi implementada uma abordagem baseada em Edge Computing.
 
-O funcionamento ocorre da seguinte forma:
+O comportamento do sistema segue a seguinte lógica:
 
-Quando o dispositivo está offline:
+Em condição offline:
 Os dados coletados são armazenados em uma fila local
 Nenhuma informação é perdida
-Quando a conexão é restabelecida:
-O sistema inicia automaticamente a sincronização
+Após restabelecimento da conexão:
+O sistema inicia automaticamente o processo de sincronização
 Os dados armazenados são enviados para a nuvem
 
-Essa lógica garante:
+Essa estratégia garante:
 
-Maior confiabilidade
-Resiliência do sistema
+Confiabilidade
+Resiliência
 Integridade dos dados
+Fluxo de Funcionamento
 
-  - Fluxo de Funcionamento
+O funcionamento do sistema pode ser descrito em etapas:
+
 Coleta dos dados (BPM, temperatura e umidade)
 Verificação do status da conexão
-Se online:
-Envio imediato via MQTT
-Se offline:
-Armazenamento em fila local
-Reconexão:
-Sincronização automática com a nuvem
-
-  - Gerenciamento da Conexão
+Caso online: envio imediato via MQTT
+Caso offline: armazenamento em fila local
+Reconexão: sincronização automática dos dados com a nuvem
+Gerenciamento da Conectividade
 
 O sistema realiza continuamente:
 
-Verificação da conexão WiFi
-Tentativa de reconexão ao broker MQTT
-Manutenção da conexão ativa com mqttClient.loop()
+Verificação do estado da conexão WiFi
+Tentativas de reconexão ao broker MQTT
+Manutenção da conexão ativa através do método mqttClient.loop()
 
-Essa abordagem garante que o dispositivo permaneça conectado e apto a enviar dados sempre que possível.
+Essa abordagem garante que o dispositivo permaneça operacional e pronto para transmitir dados sempre que houver conectividade disponível.
 
-  - Resultado
+Resultado da Implementação
 
 Como resultado, foi possível desenvolver um sistema capaz de:
 
@@ -190,40 +192,40 @@ Monitorar dados em tempo real
 Operar de forma independente da conectividade
 Sincronizar dados automaticamente com a nuvem
 Utilizar comunicação eficiente via MQTT
+Integração MQTT com Node-RED (Backend)
 
-## Integração MQTT com Node-RED (Backend)
+Nesta etapa, foi realizada a integração entre o ESP32 (simulado no Wokwi) e o ambiente de backend, utilizando Node-RED para recepção e monitoramento dos dados transmitidos via MQTT.
 
-Nesta etapa, foi implementada a integração entre o ESP32 (simulado no Wokwi) e o ambiente de backend utilizando o protocolo MQTT e o Node-RED para recepção e monitoramento dos dados em tempo real.
+Objetivo
 
-  - Objetivo
+Validar a comunicação entre o dispositivo e o backend, garantindo o recebimento e a visualização dos dados em tempo real.
 
-Receber os dados de sinais vitais enviados pelo ESP32 via MQTT e validar a comunicação com o backend.
+Configuração do Broker
 
-  - Configuração do Broker MQTT (HiveMQ Cloud)
+Foi utilizado o mesmo broker MQTT (HiveMQ Cloud), garantindo consistência na comunicação entre os componentes do sistema.
 
-Foi utilizado o HiveMQ Cloud como broker MQTT.
+Parâmetros utilizados:
 
 Protocolo: MQTT v3.1.1
 Porta: 8883
-Autenticação: usuário e senha configurados
-Tópico utilizado:
-cardio/dados
+Autenticação: usuário e senha
+Tópico: cardio/dados
 
-O ESP32 publica continuamente os dados nesse tópico.
+O ESP32 publica continuamente os dados nesse tópico, permitindo sua leitura pelo backend.
 
-  - Fluxo no Node-RED
+Fluxo Implementado no Node-RED
 
-O fluxo implementado foi simplificado para garantir estabilidade na conexão:
+Para garantir estabilidade e simplicidade na integração, foi adotado um fluxo reduzido:
 
 MQTT IN → DEBUG
-📥 MQTT IN
-Inscrito no tópico cardio/dados
-Responsável por receber os dados enviados pelo ESP32
+MQTT IN
+Responsável por se inscrever no tópico cardio/dados
+Recebe os dados enviados pelo ESP32
 Conectado ao broker HiveMQ
-🐞 DEBUG
+DEBUG
 Exibe os dados recebidos no painel lateral do Node-RED
-Utilizado para validação da comunicação
-📊 Estrutura dos Dados Recebidos
+Utilizado para validação e monitoramento da comunicação
+Estrutura dos Dados Recebidos
 
 Os dados são recebidos no formato JSON:
 
@@ -235,19 +237,21 @@ Os dados são recebidos no formato JSON:
   "alerta": false
 }
 
-Mesmo sem o nó de conversão JSON, o Node-RED já exibe corretamente os dados no painel de debug.
+Mesmo sem a utilização de um nó de conversão JSON, o Node-RED foi capaz de exibir corretamente os dados no painel de debug.
 
-  - Resultados Obtidos
-Conexão estabelecida com sucesso com o broker MQTT
+Resultados Obtidos
+
+A integração permitiu validar com sucesso:
+
+Conexão com o broker MQTT
 Recebimento contínuo de dados em tempo real
 Visualização dos dados diretamente no Node-RED
-Validação da comunicação entre dispositivo (ESP32) e backend
+Comunicação funcional entre o ESP32 e o backend
+Decisão Técnica
 
-  - Decisão Técnica
+Durante os testes, optou-se por remover o nó de conversão JSON para simplificar o fluxo e garantir o funcionamento estável da recepção de dados.
 
-Durante os testes, o nó JSON foi removido para simplificar o fluxo e garantir o funcionamento correto da recepção de dados.
-
-Essa abordagem mostrou-se suficiente para validação da comunicação MQTT nesta fase do projeto.
+Essa decisão mostrou-se adequada para os objetivos desta fase, mantendo a solução funcional e de fácil validação.
 
 ## O que NAO foi implementado (outras partes do projeto)
 
