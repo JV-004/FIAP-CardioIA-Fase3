@@ -116,9 +116,83 @@ wokwi/
 
 ---
 
+### Integração com MQTT e Sincronização de Dados
+
+Nesta etapa do projeto, foi implementada a comunicação entre o dispositivo ESP32 e a nuvem utilizando o protocolo MQTT, além de uma estratégia de funcionamento resiliente baseada em Edge Computing.
+
+  - Comunicação com a Nuvem (MQTT)
+
+A transmissão dos dados foi realizada através do protocolo MQTT, escolhido por sua leveza e eficiência em aplicações IoT.
+
+O ESP32 atua como um publisher, enviando os dados coletados para o broker MQTT hospedado no HiveMQ Cloud.
+
+Broker: HiveMQ Cloud
+Protocolo: MQTT
+Tópico utilizado: cardio/dados
+
+Os dados são enviados no formato JSON, contendo informações como:
+
+{
+  "timestamp": 43054,
+  "bpm": 93,
+  "temperatura": 36.5,
+  "umidade": 60.0,
+  "alerta": false,
+  "origem": "tempo_real"
+}
+
+Essa estrutura permite fácil interpretação, escalabilidade e integração com outros sistemas.
+
+  - Estratégia de Edge Computing
+
+Para garantir a continuidade do sistema mesmo em situações de falha de conectividade, foi implementada uma abordagem baseada em Edge Computing.
+
+O funcionamento ocorre da seguinte forma:
+
+Quando o dispositivo está offline:
+Os dados coletados são armazenados em uma fila local
+Nenhuma informação é perdida
+Quando a conexão é restabelecida:
+O sistema inicia automaticamente a sincronização
+Os dados armazenados são enviados para a nuvem
+
+Essa lógica garante:
+
+Maior confiabilidade
+Resiliência do sistema
+Integridade dos dados
+
+  - Fluxo de Funcionamento
+Coleta dos dados (BPM, temperatura e umidade)
+Verificação do status da conexão
+Se online:
+Envio imediato via MQTT
+Se offline:
+Armazenamento em fila local
+Reconexão:
+Sincronização automática com a nuvem
+
+  - Gerenciamento da Conexão
+
+O sistema realiza continuamente:
+
+Verificação da conexão WiFi
+Tentativa de reconexão ao broker MQTT
+Manutenção da conexão ativa com mqttClient.loop()
+
+Essa abordagem garante que o dispositivo permaneça conectado e apto a enviar dados sempre que possível.
+
+  - Resultado
+
+Como resultado, foi possível desenvolver um sistema capaz de:
+
+Monitorar dados em tempo real
+Operar de forma independente da conectividade
+Sincronizar dados automaticamente com a nuvem
+Utilizar comunicação eficiente via MQTT
+
 ## O que NAO foi implementado (outras partes do projeto)
 
-- MQTT e broker HiveMQ Cloud (Membro 2 - Backend)
 - Dashboard Node-RED (Membro 3 - Frontend)
 - Grafana Cloud (Membro 3 - opcional)
 - Relatorios escritos (Membro 4 - Documentacao)
