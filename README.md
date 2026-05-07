@@ -191,6 +191,64 @@ Operar de forma independente da conectividade
 Sincronizar dados automaticamente com a nuvem
 Utilizar comunicação eficiente via MQTT
 
+## Integração MQTT com Node-RED (Backend)
+
+Nesta etapa, foi implementada a integração entre o ESP32 (simulado no Wokwi) e o ambiente de backend utilizando o protocolo MQTT e o Node-RED para recepção e monitoramento dos dados em tempo real.
+
+  - Objetivo
+
+Receber os dados de sinais vitais enviados pelo ESP32 via MQTT e validar a comunicação com o backend.
+
+  - Configuração do Broker MQTT (HiveMQ Cloud)
+
+Foi utilizado o HiveMQ Cloud como broker MQTT.
+
+Protocolo: MQTT v3.1.1
+Porta: 8883
+Autenticação: usuário e senha configurados
+Tópico utilizado:
+cardio/dados
+
+O ESP32 publica continuamente os dados nesse tópico.
+
+  - Fluxo no Node-RED
+
+O fluxo implementado foi simplificado para garantir estabilidade na conexão:
+
+MQTT IN → DEBUG
+📥 MQTT IN
+Inscrito no tópico cardio/dados
+Responsável por receber os dados enviados pelo ESP32
+Conectado ao broker HiveMQ
+🐞 DEBUG
+Exibe os dados recebidos no painel lateral do Node-RED
+Utilizado para validação da comunicação
+📊 Estrutura dos Dados Recebidos
+
+Os dados são recebidos no formato JSON:
+
+{
+  "timestamp": 113551,
+  "bpm": 68,
+  "temperatura": 36.5,
+  "umidade": 60,
+  "alerta": false
+}
+
+Mesmo sem o nó de conversão JSON, o Node-RED já exibe corretamente os dados no painel de debug.
+
+  - Resultados Obtidos
+Conexão estabelecida com sucesso com o broker MQTT
+Recebimento contínuo de dados em tempo real
+Visualização dos dados diretamente no Node-RED
+Validação da comunicação entre dispositivo (ESP32) e backend
+
+  - Decisão Técnica
+
+Durante os testes, o nó JSON foi removido para simplificar o fluxo e garantir o funcionamento correto da recepção de dados.
+
+Essa abordagem mostrou-se suficiente para validação da comunicação MQTT nesta fase do projeto.
+
 ## O que NAO foi implementado (outras partes do projeto)
 
 - Dashboard Node-RED (Membro 3 - Frontend)
