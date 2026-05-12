@@ -146,7 +146,7 @@ O dashboard do CardioIA foi estruturado em duas abas temáticas no Node-RED Dash
 
 **Aba 1 — Sinais Vitais:**
 
-- **Gráfico de Série Temporal (BPM):** Exibiu os últimos 20 pontos de leitura de BPM em um gráfico de linha contínuo, com linha de referência implícita no limite clínico de 120 BPM;
+- **Gráfico de Série Temporal (BPM):** Exibiu os últimos 30 pontos de leitura de BPM em um gráfico de linha contínuo, com linha de referência implícita no limite clínico de 120 BPM;
 - **Gauge de Temperatura Corporal:** Instrumento circular calibrado entre 35°C e 42°C, com faixas de cor progressivas — verde para eutermia (≤37°C), amarelo para hipertermia leve (37–38°C) e vermelho para febre (>38°C);
 - **Gauge de Umidade Relativa:** Instrumento calibrado em escala de 0% a 100%, com zona de normalidade destacada entre 40% e 80%;
 - **Cards de Valores Atuais:** Quatro cards com ícones dinâmicos exibindo BPM, temperatura, umidade e a origem do dado (TEMPO REAL ou SINCRONIZADO).
