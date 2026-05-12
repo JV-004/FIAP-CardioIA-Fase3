@@ -4,9 +4,11 @@
 > Sistema de monitoramento cardíaco contínuo via IoT com Edge Computing, MQTT e dashboard em tempo real.
 
 [![Wokwi](https://img.shields.io/badge/Simulação-Wokwi-green?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTEyIDJhMTAgMTAgMCAxIDAgMCAyMEExMCAxMCAwIDAgMCAxMiAyeiIvPjwvc3ZnPg==)](https://wokwi.com/projects/463299672900584449)
-[![MQTT](https://img.shields.io/badge/Broker-HiveMQ_Cloud-purple)](https://www.hivemq.com/mqtt-cloud-broker/)
-[![Node-RED](https://img.shields.io/badge/Dashboard-Node--RED-red)](https://nodered.org/)
-[![ESP32](https://img.shields.io/badge/Hardware-ESP32-blue)](https://www.espressif.com/)
+[![Node-RED](https://img.shields.io/badge/Node--RED-Dashboard-red?logo=nodered)](https://nodered.org/)
+[![Grafana](https://img.shields.io/badge/Grafana-Cloud-orange?logo=grafana)](https://grafana.com/)
+[![MQTT](https://img.shields.io/badge/MQTT-HiveMQ-purple?logo=mqtt)](https://www.hivemq.com/mqtt-cloud-broker/)
+[![ESP32](https://img.shields.io/badge/Hardware-ESP32%20%2B%20Wokwi-blue?logo=espressif)](https://www.espressif.com/)
+[![FIAP](https://img.shields.io/badge/FIAP-IA%20Fase%203-red)](https://www.fiap.com.br/)
 
 ---
 
@@ -17,6 +19,7 @@
 - [Parte 1 — Hardware (ESP32 + Wokwi)](#parte-1--hardware-esp32--wokwi)
 - [Parte 2 — Comunicação MQTT e Edge Computing](#parte-2--comunicação-mqtt-e-edge-computing)
 - [Parte 3 — Dashboard Node-RED](#parte-3--dashboard-node-red)
+- [📸 Screenshots e Dashboards](#-screenshots-e-dashboards)
 - [Estrutura de Arquivos](#estrutura-de-arquivos)
 - [Limites de Alerta Médico](#limites-de-alerta-médico)
 - [Payload JSON](#payload-json)
@@ -362,6 +365,45 @@ npm install node-red-dashboard
 ```
 http://localhost:1880/ui
 ```
+
+---
+
+## 📸 Screenshots e Dashboards
+
+### 🟢 Node-RED — Estado Normal
+
+> Dashboard em operação com todos os sinais vitais dentro dos limites seguros.
+> BPM estável entre 65–95, temperatura 36.5°C, umidade 60%.
+
+![Node-RED Dashboard - Estado Normal](docs/images/01_nodered_normal.png)
+
+---
+
+### 🔴 Node-RED — Alerta Ativo (Taquicardia)
+
+> Sistema em estado de alerta com BPM de 127, acima do limite de 120 BPM.
+> Indicador visual piscante e notificação de taquicardia ativados.
+
+![Node-RED Dashboard - Alerta Ativo](docs/images/02_nodered_alerta.png)
+
+---
+
+### 📊 Grafana — Painel Histórico 6h
+
+> Visualização histórica dos sinais vitais nas últimas 6 horas.
+> Inclui anotação do evento de taquicardia, thresholds configurados
+> e tabela de eventos de alerta com timestamps.
+
+![Grafana - Painel Histórico](docs/images/03_grafana_historico.png)
+
+---
+
+### 🏗️ Arquitetura do Sistema — Fluxo Completo
+
+> Diagrama do fluxo de dados do CardioIA:
+> ESP32/Wokwi → HiveMQ Cloud (MQTT/TLS) → Node-RED → Dashboard → Grafana Cloud
+
+![Arquitetura CardioIA](docs/images/04_arquitetura_fluxo.png)
 
 ---
 
