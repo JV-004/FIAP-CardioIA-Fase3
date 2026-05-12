@@ -317,14 +317,33 @@ Dashboard completo de monitoramento cardíaco em tempo real implementado no Node
 
 **1. Instalar o pacote de dashboard**
 
-Via interface:
-> Node-RED → Menu ≡ → Manage Palette → Install → `node-red-dashboard`
+O dashboard utiliza o pacote `node-red-dashboard` (todos os widgets: `ui_chart`, `ui_gauge`, `ui_text`, `ui_led`). Instale **antes** de importar o fluxo.
 
-Via terminal:
+**Método A — Pela interface do Node-RED (recomendado)**
+
+1. Abra o Node-RED no navegador: `http://localhost:1880`
+2. Clique no **menu ☰** (canto superior direito)
+3. Selecione **Manage palette**
+4. Clique na aba **Install**
+5. No campo de busca, pesquise: `node-red-dashboard`
+6. Clique em **Install** e aguarde a conclusão
+7. **Reinicie o Node-RED** após a instalação
+
+**Método B — Via terminal (NPM)**
+
 ```bash
+# Windows — navegue até o diretório de dados do Node-RED
+cd %USERPROFILE%\.node-red
+npm install node-red-dashboard
+
+# Linux / macOS
 cd ~/.node-red
 npm install node-red-dashboard
 ```
+
+> Após instalar pelo terminal, reinicie o Node-RED para carregar os novos nós.
+
+> **Verificação:** Após reiniciar, os nós `ui_chart`, `ui_gauge`, `ui_text` e `ui_led` aparecerão na paleta lateral esquerda do Node-RED, na seção **dashboard**.
 
 **2. Importar o fluxo**
 
