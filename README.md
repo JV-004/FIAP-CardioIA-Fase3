@@ -67,6 +67,7 @@ O **CardioIA** é um sistema de monitoramento de sinais vitais baseado em IoT qu
 | **1** | Hardware — ESP32, sensores e Edge Computing (Wokwi) | ✅ Concluído |
 | **2** | Backend — Broker MQTT (HiveMQ Cloud) e integração Node-RED | ✅ Concluído |
 | **3** | Dashboard — Node-RED completo com alertas e visualização | ✅ Concluído |
+| **4** | Relatórios Técnicos e IA Aplicada (Ir Além 2) | ✅ Concluído |
 
 ---
 
@@ -430,6 +431,24 @@ http://localhost:1880/ui
 > ESP32/Wokwi → HiveMQ Cloud (MQTT/TLS) → Node-RED → Dashboard → Grafana Cloud
 
 ![Arquitetura CardioIA](docs/images/04_arquitetura_fluxo.png)
+
+---
+
+## 📄 Relatórios e IA (Parte 4)
+
+### Relatórios Obrigatórios
+| Relatório | Arquivo | Páginas |
+|---|---|---|
+| Parte 1 — Edge Computing | docs/relatorio_parte1.md | mín. 1 página |
+| Parte 2 — MQTT + Dashboard | docs/relatorio_parte2.md | mín. 2 páginas |
+
+### Ir Além 2 — IA em Séries Temporais
+- **Notebook:** `notebooks/cardio_ia_series_temporais.ipynb`
+- **Modelos comparados:** Regressão Logística × Rede Neuromórfica LIF
+- **Resultados:**
+
+![Comparação dos Modelos](docs/images/ia_comparacao_modelos.png)
+![Curvas ROC](docs/images/ia_curvas_roc.png)
 
 ---
 
