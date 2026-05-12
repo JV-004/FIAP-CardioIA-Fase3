@@ -1,0 +1,31 @@
+/**
+ * config.h.example — Modelo de configuração para o CardioIA ESP32
+ *
+ * INSTRUÇÕES:
+ *   1. Copie este arquivo para "config.h"  (na mesma pasta)
+ *   2. Preencha com suas credenciais reais
+ *   3. O arquivo "config.h" está no .gitignore e NUNCA será commitado
+ *
+ * ⚠️  NUNCA suba "config.h" com credenciais reais para o GitHub!
+ */
+
+#ifndef CONFIG_H
+#define CONFIG_H
+
+// ─── Rede WiFi ────────────────────────────────────────────────────────────────
+// Para simulação no Wokwi, use "Wokwi-GUEST" e senha vazia ""
+#define WIFI_SSID     "Wokwi-GUEST"
+#define WIFI_PASSWORD ""
+
+// ─── Broker MQTT (HiveMQ Cloud) ──────────────────────────────────────────────
+// Encontre seu broker em: app.hivemq.com → Cluster → Overview
+#define MQTT_SERVER   "SEU_ID.s1.eu.hivemq.cloud"
+#define MQTT_PORT     8883
+#define MQTT_USER     "SEU_USUARIO"
+#define MQTT_PASSWORD "SUA_SENHA"
+
+// ─── Tópicos MQTT ─────────────────────────────────────────────────────────────
+#define TOPICO_DADOS   "cardio/dados"
+#define TOPICO_ALERTA  "cardio/alerta"
+
+#endif // CONFIG_H
