@@ -446,14 +446,38 @@ http://localhost:1880/ui
 
 ## 🤖 IA em Séries Temporais (Ir Além 2)
 
-Comparação entre **Regressão Logística** (modelo estatístico tradicional) e **Rede Neuromórfica LIF** (bio-inspirada, implementada com NumPy puro) para detecção de taquicardia em séries temporais de sinais vitais.
+Comparação entre **Regressão Logística** (modelo estatístico tradicional) e **Rede Neuromórfica LIF** (*Leaky Integrate-and-Fire*, bio-inspirada, implementada com NumPy puro) para detecção de taquicardia em séries temporais de sinais vitais coletados pelo CardioIA.
 
-📓 **Notebook:** [notebooks/cardio_ia_series_temporais.ipynb](notebooks/cardio_ia_series_temporais.ipynb)
+### 📓 Notebook
+
+| Recurso | Link |
+|---|---|
+| 📄 Visualizar no GitHub | [notebooks/cardio_ia_series_temporais.ipynb](notebooks/cardio_ia_series_temporais.ipynb) |
+| ▶️ Executar no Google Colab | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/JV-004/FIAP-CardioIA-Fase3/blob/main/notebooks/cardio_ia_series_temporais.ipynb) |
+
+### Modelos Comparados
+
+| Parâmetro | Regressão Logística | LIF Neuromórfico |
+|:---|:---:|:---:|
+| **Tipo** | Estatístico / Linear | Bio-inspirado / Temporal |
+| **Implementação** | scikit-learn | NumPy puro |
+| **Interpretabilidade** | ✅ Alta (coeficientes) | ⚠️ Baixa (firing rate) |
+| **Viabilidade no ESP32** | ✅ Produto escalar | ⚠️ Simulação temporal |
+| **Dados simulados** | 500 amostras · seed=42 | Mesmos dados |
+| **Split treino/teste** | 80% / 20% · estratificado | — |
 
 ### Resultados
 
+**Comparação de Métricas (Accuracy, Precision, Recall, F1, AUC):**
+
 ![Comparação dos Modelos](docs/images/ia_comparacao_modelos.png)
+
+**Curvas ROC — poder discriminativo de cada classificador:**
+
 ![Curvas ROC](docs/images/ia_curvas_roc.png)
+
+**Matrizes de Confusão — acertos e erros por classe:**
+
 ![Matriz de Confusão](docs/images/ia_matriz_confusao.png)
 
 > 🎥 **Vídeo de apresentação:** [YouTube — CardioIA Fase 3](URL_DO_VIDEO_AQUI)
