@@ -369,6 +369,12 @@ Execute o comando abaixo (ainda na pasta `node-red`):
 ```bash
 npm start
 ```
+
+> **Aviso para usuários do Windows (PowerShell):** Se você receber um erro de "execução de scripts foi desabilitada" (UnauthorizedAccess), use o Prompt de Comando ou execute este comando alternativo:
+> ```powershell
+> cmd /c npm start
+> ```
+
 Isso iniciará o Node-RED localmente, carregando automaticamente o arquivo `flows.json` já configurado para o CardioIA.
 
 **3. Conectar ao broker MQTT**
