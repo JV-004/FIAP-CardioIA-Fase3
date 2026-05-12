@@ -1,0 +1,124 @@
+# =============================================================================
+# .gitignore — CardioIA Fase 3
+# Stack: ESP32/Arduino (C++), Python, Node-RED, Windows
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# 🔴 SEGURANÇA — Credenciais e arquivos sensíveis (NUNCA versionar)
+# -----------------------------------------------------------------------------
+wokwi/config.h          # Credenciais reais do MQTT/WiFi (usar config.h.example)
+.env                    # Variáveis de ambiente locais
+.env.local
+.env.production
+*.pem                   # Certificados TLS privados
+*.key                   # Chaves privadas
+*.p12
+secrets.json
+credentials.json
+
+# -----------------------------------------------------------------------------
+# Node-RED — Arquivos de runtime (não pertencem ao repositório)
+# -----------------------------------------------------------------------------
+node-red/.config/        # Estado interno do Node-RED
+node-red/lib/            # Módulos instalados localmente
+node-red/node_modules/   # Dependências npm do Node-RED
+node-red/*.log
+node-red/flows_cred.json # ⚠️  Arquivo de credenciais gerado pelo Node-RED
+
+# -----------------------------------------------------------------------------
+# Python — Cache, ambientes virtuais e artefatos de teste
+# -----------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+.pytest_cache/
+.tox/
+htmlcov/
+.coverage
+.coverage.*
+*.cover
+.hypothesis/
+venv/
+env/
+ENV/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+dist/
+build/
+*.egg-info/
+*.egg
+MANIFEST
+
+# -----------------------------------------------------------------------------
+# PlatformIO — Build artifacts (gerados automaticamente)
+# -----------------------------------------------------------------------------
+.pio/
+.pioenvs/
+.piolibdeps/
+.piolib_cache/
+*/.pioenvs/
+
+# -----------------------------------------------------------------------------
+# Arduino IDE — Temporários
+# -----------------------------------------------------------------------------
+*.elf
+*.hex
+*.bin
+*.map
+
+# -----------------------------------------------------------------------------
+# Windows — Arquivos do sistema operacional
+# -----------------------------------------------------------------------------
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.lnk
+*.tmp
+*.bak
+*.swp
+
+# -----------------------------------------------------------------------------
+# macOS (caso algum colaborador use Mac)
+# -----------------------------------------------------------------------------
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# -----------------------------------------------------------------------------
+# VS Code — Configurações pessoais (manter apenas .vscode/extensions.json)
+# -----------------------------------------------------------------------------
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# -----------------------------------------------------------------------------
+# JetBrains IDEs
+# -----------------------------------------------------------------------------
+.idea/
+*.iml
+
+# -----------------------------------------------------------------------------
+# Logs e relatórios temporários
+# -----------------------------------------------------------------------------
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# -----------------------------------------------------------------------------
+# Arquivos de backup gerados por editores
+# -----------------------------------------------------------------------------
+*~
+*.orig
+*.rej
