@@ -1,6 +1,17 @@
-# 🫀 CardioIA — Fase 3
+# FIAP — Faculdade de Informática e Administração Paulista
 
-> **FIAP · Curso de Inteligência Artificial · Fase 3**
+<p align="center">
+  <a href="https://www.fiap.com.br/">
+    <img src="docs/images/logo-fiap (2).png" alt="FIAP - Faculdade de Informática e Administração Paulista" border="0" width="40%" height="40%">
+  </a>
+</p>
+
+<br>
+
+---
+
+## 🫀 CardioIA — Fase 3
+
 > Sistema de monitoramento cardíaco contínuo via IoT com Edge Computing, MQTT e dashboard em tempo real.
 
 [![Wokwi](https://img.shields.io/badge/Simulação-Wokwi-green?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTEyIDJhMTAgMTAgMCAxIDAgMCAyMEExMCAxMCAwIDAgMCAxMiAyeiIvPjwvc3ZnPg==)](https://wokwi.com/projects/463299672900584449)
@@ -9,6 +20,25 @@
 [![MQTT](https://img.shields.io/badge/MQTT-HiveMQ-purple?logo=mqtt)](https://www.hivemq.com/mqtt-cloud-broker/)
 [![ESP32](https://img.shields.io/badge/Hardware-ESP32%20%2B%20Wokwi-blue?logo=espressif)](https://www.espressif.com/)
 [![FIAP](https://img.shields.io/badge/FIAP-IA%20Fase%203-red)](https://www.fiap.com.br/)
+
+---
+
+## 👨‍🎓 Integrantes
+
+| Nome | RM | Contribuição |
+|---|---:|---|
+| João | RM565999 | Hardware — ESP32 + sensores no Wokwi |
+| Tayná Esteves | RM562491 | Backend — MQTT + nuvem + alertas |
+| Carlos Eduardo | RM566487 | Frontend — Node-RED + dashboard + Grafana |
+| Endrew Alves | RM563646 | Documentação — Relatórios + IA |
+
+## 👩‍🏫 Professores
+
+### Tutor(a)
+- <a href="https://www.linkedin.com/in/john-paul-lima/">John Paul Lima</a>
+
+### Coordenador(a)
+- <a href="https://www.linkedin.com/in/andregodoichiovato/">André Godoi Chiovato</a>
 
 ---
 
@@ -427,7 +457,14 @@ FIAP-CardioIA-Fase3/
 ├── node-red/                    # Parte 3 — Dashboard
 │   └── flows.json               # Fluxo completo importável
 │
-└── prints/                      # Screenshots para o relatório
+├── docs/                        # Documentação visual
+│   └── images/
+│       ├── 01_nodered_normal.png    # Dashboard Node-RED — estado normal
+│       ├── 02_nodered_alerta.png    # Dashboard Node-RED — alerta ativo
+│       ├── 03_grafana_historico.png # Grafana — painel histórico 6h
+│       └── 04_arquitetura_fluxo.png # Diagrama de arquitetura do sistema
+│
+└── prints/                      # Screenshots originais de validação
     ├── print1-hivemq.png
     ├── print2-hivemq.png
     ├── print3-hivemq.png
