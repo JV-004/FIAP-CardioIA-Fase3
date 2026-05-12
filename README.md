@@ -105,6 +105,8 @@ Circuito virtual no Wokwi simulando um dispositivo de monitoramento cardíaco co
 
 🔗 **Link da simulação:** [wokwi.com/projects/463299672900584449](https://wokwi.com/projects/463299672900584449)
 
+📺 **Vídeo demonstrativo:** [Assista ao funcionamento do sistema no YouTube](https://www.youtube.com/watch?v=OR99ABXvCMg)
+
 ### Checklist
 
 - [x] Circuito montado no Wokwi (ESP32 + DHT22 + potenciômetro + LEDs)
