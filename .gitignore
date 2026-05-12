@@ -4,6 +4,11 @@
 # =============================================================================
 
 # -----------------------------------------------------------------------------
+# 🤖 FERRAMENTAS DE DESENVOLVIMENTO (geradas pelo assistente de IA)
+# -----------------------------------------------------------------------------
+.agents/                # Skills e contexto do Antigravity (não pertence ao repo)
+
+# -----------------------------------------------------------------------------
 # 🔴 SEGURANÇA — Credenciais e arquivos sensíveis (NUNCA versionar)
 # -----------------------------------------------------------------------------
 wokwi/config.h          # Credenciais reais do MQTT/WiFi (usar config.h.example)
