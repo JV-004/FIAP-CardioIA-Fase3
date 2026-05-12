@@ -1,0 +1,13 @@
+{
+  "name": "cardioia-node-red",
+  "version": "1.0.0",
+  "description": "Dashboard Node-RED para CardioIA Fase 3",
+  "main": "index.js",
+  "scripts": {
+    "start": "node-red -u . -f flows.json"
+  },
+  "dependencies": {
+    "node-red": "^3.1.0",
+    "node-red-dashboard": "^3.6.5"
+  }
+}

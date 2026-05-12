@@ -348,51 +348,39 @@ Dashboard completo de monitoramento cardíaco em tempo real implementado no Node
 └──────────────────────────────────────────────────┘
 ```
 
-### Como Importar o flows.json
+### Como Executar o Node-RED Localmente
 
-**1. Instalar o pacote de dashboard**
+**1. Instalação das dependências (Novo método integrado)**
 
-O dashboard utiliza o pacote `node-red-dashboard` (todos os widgets: `ui_chart`, `ui_gauge`, `ui_text`, `ui_led`). Instale **antes** de importar o fluxo.
+O projeto agora inclui um `package.json` configurado na pasta `node-red` para facilitar a instalação do ambiente isolado.
 
-**Método A — Pela interface do Node-RED (recomendado)**
+1. Abra o terminal e navegue até a pasta `node-red`:
+   ```bash
+   cd node-red
+   ```
+2. Instale o Node-RED e as dependências do dashboard:
+   ```bash
+   npm install
+   ```
 
-1. Abra o Node-RED no navegador: `http://localhost:1880`
-2. Clique no **menu ☰** (canto superior direito)
-3. Selecione **Manage palette**
-4. Clique na aba **Install**
-5. No campo de busca, pesquise: `node-red-dashboard`
-6. Clique em **Install** e aguarde a conclusão
-7. **Reinicie o Node-RED** após a instalação
+**2. Iniciar o Node-RED**
 
-**Método B — Via terminal (NPM)**
-
+Execute o comando abaixo (ainda na pasta `node-red`):
 ```bash
-# Windows — navegue até o diretório de dados do Node-RED
-cd %USERPROFILE%\.node-red
-npm install node-red-dashboard
-
-# Linux / macOS
-cd ~/.node-red
-npm install node-red-dashboard
+npm start
 ```
+Isso iniciará o Node-RED localmente, carregando automaticamente o arquivo `flows.json` já configurado para o CardioIA.
 
-> Após instalar pelo terminal, reinicie o Node-RED para carregar os novos nós.
+**3. Conectar ao broker MQTT**
 
-> **Verificação:** Após reiniciar, os nós `ui_chart`, `ui_gauge`, `ui_text` e `ui_led` aparecerão na paleta lateral esquerda do Node-RED, na seção **dashboard**.
+Para conectar o Node-RED ao seu broker HiveMQ Cloud:
+1. Acesse o Node-RED no navegador: `http://localhost:1880`
+2. Dê um duplo clique no nó `MQTT IN — cardio/dados`
+3. Clique no ícone de lápis ao lado de "HiveMQ Cloud (TLS)" para editar
+4. Preencha com os seus dados (Host, Porta 8883, confirme o TLS ✅, e adicione Usuário e Senha na aba Security)
+5. Clique em **Update**, depois em **Done** e por fim clique em **Deploy** (botão vermelho no canto superior direito)
 
-**2. Importar o fluxo**
-
-> Node-RED → Menu ≡ → Import → selecionar arquivo → `node-red/flows.json` → Import
-
-**3. Configurar o broker MQTT**
-
-> Clique duplo no nó `MQTT IN — cardio/dados` → editar broker → preencher host, porta 8883, TLS ✅, usuário e senha
-
-**4. Fazer o deploy**
-
-> Clique no botão **Deploy** (vermelho, canto superior direito)
-
-**5. Acessar o dashboard**
+**4. Acessar o dashboard**
 
 ```
 http://localhost:1880/ui
