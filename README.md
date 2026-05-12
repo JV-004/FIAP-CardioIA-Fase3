@@ -19,6 +19,7 @@
 [![Grafana](https://img.shields.io/badge/Grafana-Cloud-orange?logo=grafana)](https://grafana.com/)
 [![MQTT](https://img.shields.io/badge/MQTT-HiveMQ-purple?logo=mqtt)](https://www.hivemq.com/mqtt-cloud-broker/)
 [![ESP32](https://img.shields.io/badge/Hardware-ESP32%20%2B%20Wokwi-blue?logo=espressif)](https://www.espressif.com/)
+[![Python](https://img.shields.io/badge/IA-Python%203.10-yellow?logo=python)](https://python.org/)
 [![FIAP](https://img.shields.io/badge/FIAP-IA%20Fase%203-red)](https://www.fiap.com.br/)
 
 ---
@@ -50,7 +51,9 @@
 - [Parte 2 — Comunicação MQTT e Edge Computing](#parte-2--comunicação-mqtt-e-edge-computing)
 - [Parte 3 — Dashboard Node-RED](#parte-3--dashboard-node-red)
 - [📸 Screenshots e Dashboards](#-screenshots-e-dashboards)
-- [Estrutura de Arquivos](#estrutura-de-arquivos)
+- [📄 Relatórios (Parte 4)](#-relatórios-parte-4)
+- [🤖 IA em Séries Temporais (Ir Além 2)](#-ia-em-séries-temporais-ir-além-2)
+- [📁 Estrutura de Arquivos](#estrutura-de-arquivos)
 - [Limites de Alerta Médico](#limites-de-alerta-médico)
 - [Payload JSON](#payload-json)
 
@@ -399,56 +402,61 @@ http://localhost:1880/ui
 
 ### 🟢 Node-RED — Estado Normal
 
-> Dashboard em operação com todos os sinais vitais dentro dos limites seguros.
-> BPM estável entre 65–95, temperatura 36.5°C, umidade 60%.
+> Dashboard com todos os sinais vitais dentro dos limites seguros.
+> BPM estável (65–95), temperatura 36,5°C, umidade 60%.
 
-![Node-RED Dashboard - Estado Normal](docs/images/01_nodered_normal.png)
+![Node-RED Normal](docs/images/01_nodered_normal.png)
 
 ---
 
 ### 🔴 Node-RED — Alerta Ativo (Taquicardia)
 
-> Sistema em estado de alerta com BPM de 127, acima do limite de 120 BPM.
-> Indicador visual piscante e notificação de taquicardia ativados.
+> Sistema em alerta com BPM 127, acima do limite de 120 BPM.
+> Indicador visual e notificação de taquicardia ativados.
 
-![Node-RED Dashboard - Alerta Ativo](docs/images/02_nodered_alerta.png)
-
----
-
-### 📊 Grafana — Painel Histórico 6h
-
-> Visualização histórica dos sinais vitais nas últimas 6 horas.
-> Inclui anotação do evento de taquicardia, thresholds configurados
-> e tabela de eventos de alerta com timestamps.
-
-![Grafana - Painel Histórico](docs/images/03_grafana_historico.png)
+![Node-RED Alerta](docs/images/02_nodered_alerta.png)
 
 ---
 
-### 🏗️ Arquitetura do Sistema — Fluxo Completo
+### 📊 Grafana — Painel Histórico 24h
 
-> Diagrama do fluxo de dados do CardioIA:
+> Histórico dos sinais vitais com anotação do evento de taquicardia,
+> thresholds configurados e tabela de eventos de alerta.
+
+![Grafana Histórico](docs/images/03_grafana_historico.png)
+
+---
+
+### 🏗️ Arquitetura — Fluxo Completo do Sistema
+
 > ESP32/Wokwi → HiveMQ Cloud (MQTT/TLS) → Node-RED → Dashboard → Grafana Cloud
 
 ![Arquitetura CardioIA](docs/images/04_arquitetura_fluxo.png)
 
 ---
 
-## 📄 Relatórios e IA (Parte 4)
+## 📄 Relatórios (Parte 4)
 
-### Relatórios Obrigatórios
-| Relatório | Arquivo | Páginas |
+| Relatório | Arquivo | Requisito |
 |---|---|---|
-| Parte 1 — Edge Computing | docs/relatorio_parte1.md | mín. 1 página |
-| Parte 2 — MQTT + Dashboard | docs/relatorio_parte2.md | mín. 2 páginas |
+| Parte 1 — Edge Computing | [relatorio_parte1.md](docs/relatorio_parte1.md) | mín. 1 página |
+| Parte 2 — MQTT + Dashboard | [relatorio_parte2.md](docs/relatorio_parte2.md) | mín. 2 páginas |
 
-### Ir Além 2 — IA em Séries Temporais
-- **Notebook:** `notebooks/cardio_ia_series_temporais.ipynb`
-- **Modelos comparados:** Regressão Logística × Rede Neuromórfica LIF
-- **Resultados:**
+---
+
+## 🤖 IA em Séries Temporais (Ir Além 2)
+
+Comparação entre **Regressão Logística** (modelo estatístico tradicional) e **Rede Neuromórfica LIF** (bio-inspirada, implementada com NumPy puro) para detecção de taquicardia em séries temporais de sinais vitais.
+
+📓 **Notebook:** [notebooks/cardio_ia_series_temporais.ipynb](notebooks/cardio_ia_series_temporais.ipynb)
+
+### Resultados
 
 ![Comparação dos Modelos](docs/images/ia_comparacao_modelos.png)
 ![Curvas ROC](docs/images/ia_curvas_roc.png)
+![Matriz de Confusão](docs/images/ia_matriz_confusao.png)
+
+> 🎥 **Vídeo de apresentação:** [YouTube — CardioIA Fase 3](URL_DO_VIDEO_AQUI)
 
 ---
 
