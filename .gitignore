@@ -24,7 +24,8 @@ credentials.json
 # -----------------------------------------------------------------------------
 # Node-RED — Arquivos de runtime (não pertencem ao repositório)
 # -----------------------------------------------------------------------------
-node-red/.config/        # Estado interno do Node-RED
+node-red/.config/        # Estado interno do Node-RED (v2)
+node-red/.config.*       # Estado interno do Node-RED (v3+)
 node-red/lib/            # Módulos instalados localmente
 node-red/node_modules/   # Dependências npm do Node-RED
 node-red/*.log
