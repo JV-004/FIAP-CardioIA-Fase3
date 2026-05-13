@@ -489,34 +489,52 @@ Comparação entre **Regressão Logística** (modelo estatístico tradicional) e
 ```
 FIAP-CardioIA-Fase3/
 │
-├── README.md                    # Este documento
-├── CardioIA_Fase3.pdf           # Enunciado do projeto
+├── README.md                    # Documento principal do projeto
+├── ENTREGA.md                   # Documento resumido para entrega FIAP
+├── .gitignore                   # Arquivos ignorados pelo Git
 │
-├── wokwi/                       # Parte 1 — Hardware
-│   ├── sketch.ino               # Código principal (usar no Wokwi)
-│   ├── src/main.cpp             # Mesmo código para PlatformIO
-│   ├── diagram.json             # Circuito virtual do ESP32
-│   ├── platformio.ini           # Configuração PlatformIO
-│   ├── libraries.txt            # Bibliotecas necessárias
-│   ├── wokwi.toml               # Configuração do simulador
-│   └── test_sistema.py          # Testes unitários da lógica
+├── docs/                        # Documentação técnica e visual
+│   ├── CardioIA_Fase3.pdf       # Enunciado do projeto
+│   ├── relatorio_parte1.md      # Relatório Parte 1 — Edge Computing
+│   ├── relatorio_parte2.md      # Relatório Parte 2 — MQTT + Dashboard
+│   │
+│   └── images/                  # Imagens, dashboards, gráficos e prints
+│       ├── 01_nodered_normal.png        # Dashboard Node-RED — estado normal
+│       ├── 02_nodered_alerta.png        # Dashboard Node-RED — alerta ativo
+│       ├── 03_grafana_historico.png     # Grafana — painel histórico
+│       ├── 04_arquitetura_fluxo.png     # Diagrama de arquitetura do sistema
+│       ├── ia_comparacao_modelos.png    # Comparação de métricas dos modelos de IA
+│       ├── ia_curvas_roc.png            # Curvas ROC dos modelos de IA
+│       ├── ia_matriz_confusao.png       # Matrizes de confusão dos modelos
+│       ├── logo-fiap (2).png            # Logo FIAP usada no README
+│       ├── print1- hivemq.png           # Print original de validação HiveMQ
+│       ├── print2- hivemq.png           # Print original de validação HiveMQ
+│       ├── print3- hivemq.png           # Print original de validação HiveMQ
+│       ├── print4- hivemq.png           # Print original de validação HiveMQ
+│       └── printNODERED.png             # Print original de validação Node-RED
 │
 ├── node-red/                    # Parte 3 — Dashboard
-│   └── flows.json               # Fluxo completo importável
+│   ├── flows.json               # Fluxo completo importável no Node-RED
+│   ├── package.json             # Dependências e script de execução
+│   └── package-lock.json        # Lockfile das dependências Node.js
 │
-├── docs/                        # Documentação visual
-│   └── images/
-│       ├── 01_nodered_normal.png    # Dashboard Node-RED — estado normal
-│       ├── 02_nodered_alerta.png    # Dashboard Node-RED — alerta ativo
-│       ├── 03_grafana_historico.png # Grafana — painel histórico 6h
-│       └── 04_arquitetura_fluxo.png # Diagrama de arquitetura do sistema
+├── notebooks/                   # Parte 4 — IA em séries temporais
+│   └── cardio_ia_series_temporais.ipynb # Notebook IA: Regressão Logística vs LIF
 │
-└── prints/                      # Screenshots originais de validação
-    ├── print1-hivemq.png
-    ├── print2-hivemq.png
-    ├── print3-hivemq.png
-    ├── print4-hivemq.png
-    └── printNODERED.png
+├── scripts/                     # Scripts auxiliares
+│   └── publish_to_github.ps1    # Script PowerShell para publicação no GitHub
+│
+└── wokwi/                       # Parte 1 — Hardware e simulação ESP32
+    ├── sketch.ino               # Código principal para uso no Wokwi
+    ├── diagram.json             # Circuito virtual do ESP32
+    ├── libraries.txt            # Bibliotecas necessárias no Wokwi
+    ├── platformio.ini           # Configuração para PlatformIO
+    ├── wokwi.toml               # Configuração do simulador Wokwi
+    ├── config.h.example         # Modelo de configuração sem credenciais reais
+    ├── test_sistema.py          # Testes unitários da lógica do sistema
+    │
+    └── src/
+        └── main.cpp             # Código C++ equivalente para PlatformIO
 ```
 
 ---
