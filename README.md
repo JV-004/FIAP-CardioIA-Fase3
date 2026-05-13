@@ -480,8 +480,6 @@ Comparação entre **Regressão Logística** (modelo estatístico tradicional) e
 
 ![Matriz de Confusão](docs/images/ia_matriz_confusao.png)
 
-> 🎥 **Vídeo de apresentação:** [YouTube — CardioIA Fase 3](URL_DO_VIDEO_AQUI)
-
 ---
 
 ## Estrutura de Arquivos
